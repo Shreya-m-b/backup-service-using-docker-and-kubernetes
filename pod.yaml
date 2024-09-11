@@ -1,0 +1,25 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backup-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backup
+  template:
+    metadata:
+      labels:
+        app: backup
+    spec:
+      containers:
+      - name: backup-container
+        image: docker.io/shreyambgowda/my-backup-script:latest
+        volumeMounts:
+        - mountPath: /data
+          name: backup-data
+      volumes:
+      - name: backup-data
+        persistentVolumeClaim:
+          claimName: my-pvc

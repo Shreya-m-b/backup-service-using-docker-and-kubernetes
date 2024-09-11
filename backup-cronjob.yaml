@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-cronjob
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup-container
+            image: docker.io/shreyambgowda/my-backup-script:latest
+            imagePullPolicy: Always            
+            command:
+            - /bin/sh
+            - -c
+            - "echo 'Hello, Doing Backup'"
+            volumeMounts:
+            - mountPath: /app
+              name: backup-volume        
+              readOnly: true      
+          volumes:
+          - name: backup-volume
+            persistentVolumeClaim:
+              claimName: my-pvc1
+          restartPolicy: OnFailure
